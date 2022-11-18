@@ -12,7 +12,7 @@ message("boost inc:${Boost_INCLUDE_DIR}")
 
 set(shared_srcs shared/Controller.cpp)
 set(main_srcs main/main.cpp main/DynamicLibrary.cpp debugger/PseudoTerminal.cpp)
-set(debugger_srcs debugger/debugger.cpp)
+set(debugger_srcs debugger/debugger.cpp debugger/Interpreter.cpp debugger/Interpreter.h)
 
 add_executable(main ${shared_srcs} ${main_srcs})
 add_library(debugger SHARED ${shared_srcs} ${debugger_srcs})

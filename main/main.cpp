@@ -24,14 +24,14 @@ int main() {
 
 
     while (true) {
-//        std::cout << "Param = " << controller->get_param() << std::endl;
+        std::cout << "Param = " << controller->get_param() << std::endl;
 //        pty.send(std::to_string(controller->get_param()));
-        std::cout << pty.read_line() << std::endl;
-
+//        std::cout << pty.read_line() << std::endl;
+//
         if (controller->get_param() < 0) {
             return 0;
         }
 
-//        std::this_thread::sleep_for(2000ms);
+        std::this_thread::sleep_for(2000ms);
     }
 }
