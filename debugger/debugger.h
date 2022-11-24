@@ -9,6 +9,7 @@
 #include <boost/python.hpp>
 #include <iostream>
 
+extern "C" std::string get_shared_hash();
 extern "C" void start(std::shared_ptr<Controller> controller);
 
 #endif //EXTERNAL_DEBUG_DEBUGGER_H

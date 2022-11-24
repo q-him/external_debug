@@ -25,7 +25,7 @@ BOOST_PYTHON_MODULE(debugger)
 void debugger_loop(PseudoTerminal& pt, Interpreter& interpreter) {
     pt.send(">>> ");
 
-    std::string input = pt.read_line();
+    std::string input = pt.receive_line();
     std::string result = interpreter.run(input);
 
     if (!result.empty()) {
@@ -65,4 +65,8 @@ extern "C" void start(std::shared_ptr<Controller> controller) {
     global["c"] = ControllerReference(std::move(controller));
 
     debug_thread = std::thread(debug_thread_body);
+}
+
+std::string get_shared_hash() {
+    return SHARED_HASH;
 }
