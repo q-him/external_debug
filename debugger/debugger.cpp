@@ -23,6 +23,8 @@ BOOST_PYTHON_MODULE(debugger)
 }
 
 void debugger_loop(PseudoTerminal& pt, Interpreter& interpreter) {
+    pt.send(">>> ");
+
     std::string input = pt.read_line();
     std::string result = interpreter.run(input);
 
@@ -32,8 +34,6 @@ void debugger_loop(PseudoTerminal& pt, Interpreter& interpreter) {
         pt.send(result);
         pt.send("\r\n");
     }
-
-    pt.send(">>> ");
 }
 
 void debug_thread_body() {

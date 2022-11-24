@@ -19,7 +19,14 @@ void Interpreter::import(const std::string &module, const std::string &name) {
     }
 }
 
-std::string handle_pyerror() {
+std::string Interpreter::eval(const std::string &expression) {
+    auto result = python::eval(expression.c_str(), globals, locals);
+    auto as_str = python::str(result);
+    std::string as_string = python::extract<std::string>(as_str); // NOLINT(modernize-return-braced-init-list)
+    return as_string;
+}
+
+std::string handle_python_error() {
     PyObject * exc, *val, *tb;
     python::object formatted_list, formatted;
     PyErr_Fetch(&exc, &val, &tb);
@@ -37,11 +44,14 @@ std::string handle_pyerror() {
     return python::extract<std::string>(formatted); // NOLINT(modernize-return-braced-init-list)
 }
 
-std::string Interpreter::eval(const std::string &expression) {
-    auto result = python::eval(expression.c_str(), globals, locals);
-    auto as_str = python::str(result);
-    std::string as_string = python::extract<std::string>(as_str); // NOLINT(modernize-return-braced-init-list)
-    return as_string;
+std::string extract_exception_message() {
+    std::string message = "Unknown error";
+    if (PyErr_Occurred()) {
+        message = handle_python_error();
+    }
+    python::handle_exception();
+    PyErr_Clear();
+    return message;
 }
 
 std::string Interpreter::exec(const std::string &code) {
@@ -50,13 +60,7 @@ std::string Interpreter::exec(const std::string &code) {
         return "";
     }
     catch (python::error_already_set const &) {
-        std::string message;
-        if (PyErr_Occurred()) {
-            message = handle_pyerror();
-        }
-        python::handle_exception();
-        PyErr_Clear();
-        return message;
+        return extract_exception_message();
     }
 }
 
@@ -65,7 +69,11 @@ std::string Interpreter::run(const std::string &code) {
         return eval(code);
     }
     catch (python::error_already_set const &) {
-        PyErr_Clear();
-        return exec(code);
+        if (PyErr_ExceptionMatches(PyExc_SyntaxError)) {
+            PyErr_Clear();
+            return exec(code);
+        } else {
+            return extract_exception_message();
+        }
     }
 }

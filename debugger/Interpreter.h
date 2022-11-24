@@ -22,4 +22,4 @@ private:
     std::string eval(const std::string& expression);
 };
 
-#endif //EXTERNAL_DEBUG_INTERPRETER_H
+#endif //EXTERNAL_DEBUG_INTERPRETER_Ha
