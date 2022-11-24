@@ -21,7 +21,7 @@ public:
     PseudoTerminal();
     ~PseudoTerminal();
     void send(const std::string& s) const;
-    std::string read_line();
+    std::string read_line() const;
     std::string get_slave_name();
 };
 

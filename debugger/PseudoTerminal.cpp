@@ -37,7 +37,7 @@ std::string PseudoTerminal::get_slave_name() {
     }
 }
 
-std::string PseudoTerminal::read_line() {
+std::string PseudoTerminal::read_line() const {
     std::string line;
     ssize_t count = 0;
     char c;
@@ -49,8 +49,9 @@ std::string PseudoTerminal::read_line() {
 
         line += c;
         write(master_handle, &c, 1);
-        std::cout << "Received char code: " << std::hex << static_cast<int>(c) << std::endl;
-    } while (count > 0 && buffer[0] != '\n' && buffer[0] != '\r');
+//        std::cout << "Received char code: " << std::hex << static_cast<int>(c) << std::dec << std::endl;
+    } while (count > 0 && c != '\n' && c != '\r');
+    write(master_handle, "\r\n", 2);
 
     return line;
 }

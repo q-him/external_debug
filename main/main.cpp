@@ -5,7 +5,7 @@
 #include <thread>
 #include <memory>
 
-#include "../debugger/PseudoTerminal.h"
+//#include "../debugger/PseudoTerminal.h"
 
 using namespace std::chrono_literals;
 
@@ -19,15 +19,15 @@ int main() {
 
     start_debugger(controller);
 
-    PseudoTerminal pty;
-    std::cout << "Slave terminal: " << pty.get_slave_name() << std::endl;
+//    PseudoTerminal pty;
+//    std::cout << "Slave terminal: " << pty.get_slave_name() << std::endl;
 
 
     while (true) {
         std::cout << "Param = " << controller->get_param() << std::endl;
 //        pty.send(std::to_string(controller->get_param()));
 //        std::cout << pty.read_line() << std::endl;
-//
+
         if (controller->get_param() < 0) {
             return 0;
         }

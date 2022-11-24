@@ -10,15 +10,16 @@
 namespace python = boost::python;
 
 class Interpreter {
-    python::object main;
-    python::dict locals;
-    python::object globals;
 public:
     Interpreter();
     void import(const std::string& module,  const std::string& name = "");
-    void exec(const std::string& code);
-    python::object eval(const std::string& expression);
+    std::string run(const std::string& code);
+private:
+    python::object main;
+    python::dict locals;
+    python::object globals;
+    std::string exec(const std::string& code);
+    std::string eval(const std::string& expression);
 };
-
 
 #endif //EXTERNAL_DEBUG_INTERPRETER_H

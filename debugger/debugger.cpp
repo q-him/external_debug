@@ -3,16 +3,48 @@
 //
 
 #include "debugger.h"
+#include "ControllerReference.h"
+#include "PseudoTerminal.h"
+#include "Interpreter.h"
 
+#include <thread>
 #include <utility>
+#include <boost/algorithm/string.hpp>
 
 namespace python = boost::python;
+
+static std::thread debug_thread;
 
 BOOST_PYTHON_MODULE(debugger)
 {
     python::class_<ControllerReference>("Controller")
             .add_property("param", &ControllerReference::get_param, &ControllerReference::set_param)
     ;
+}
+
+void debugger_loop(PseudoTerminal& pt, Interpreter& interpreter) {
+    std::string input = pt.read_line();
+    std::string result = interpreter.run(input);
+
+    if (!result.empty()) {
+        boost::replace_all(result, "\n", "\r\n");
+        boost::trim_right(result);
+        pt.send(result);
+        pt.send("\r\n");
+    }
+
+    pt.send(">>> ");
+}
+
+void debug_thread_body() {
+    PseudoTerminal pt;
+    std::cout << "Debugger device: " << pt.get_slave_name() << std::endl;
+
+    Interpreter interpreter;
+
+    while (true) {
+        debugger_loop(pt, interpreter);
+    }
 }
 
 extern "C" void start(std::shared_ptr<Controller> controller) {
@@ -29,33 +61,8 @@ extern "C" void start(std::shared_ptr<Controller> controller) {
     auto local = python::dict();
     local["a"] = 1;
 
-    try
-    {
-        global["debugger"] = python::import("debugger");
-        global["c"] = ControllerReference(std::move(controller));
-        python::exec("c.param = 200", global);
-        python::exec("print(c.param)", global);
-        python::exec("print(a)", global, local);
-        python::exec("a = 2", global, local);
-        python::exec("print(a)", global, local);
-    }
-    catch (python::error_already_set const &)
-    {
-        PyErr_Print();
-    }
-}
+    global["debugger"] = python::import("debugger");
+    global["c"] = ControllerReference(std::move(controller));
 
-ControllerReference::ControllerReference(std::shared_ptr<Controller> c) : controller(std::move(c)) {
-}
-
-int ControllerReference::get_param() {
-    return controller->get_param();
-}
-
-void ControllerReference::set_param(int param) {
-    controller->set_param(param);
-}
-
-ControllerReference::ControllerReference() : controller(std::make_shared<Controller>()){
-
+    debug_thread = std::thread(debug_thread_body);
 }

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.22)
 project(external_debug)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -12,7 +12,13 @@ message("boost inc:${Boost_INCLUDE_DIR}")
 
 set(shared_srcs shared/Controller.cpp)
 set(main_srcs main/main.cpp main/DynamicLibrary.cpp debugger/PseudoTerminal.cpp)
-set(debugger_srcs debugger/debugger.cpp debugger/Interpreter.cpp debugger/Interpreter.h)
+set(debugger_srcs
+        debugger/debugger.cpp
+        debugger/Interpreter.cpp
+        debugger/Interpreter.h
+        debugger/ControllerReference.cpp
+        debugger/PseudoTerminal.cpp
+        debugger/PseudoTerminal.h)
 
 add_executable(main ${shared_srcs} ${main_srcs})
 add_library(debugger SHARED ${shared_srcs} ${debugger_srcs})
