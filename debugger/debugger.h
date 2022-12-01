@@ -6,6 +6,7 @@
 #define EXTERNAL_DEBUG_DEBUGGER_H
 
 #include "../shared/Controller.h"
+#include "../shared/hash.h"
 #include <boost/python.hpp>
 #include <iostream>
 

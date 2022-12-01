@@ -5,6 +5,7 @@
 #ifndef EXTERNAL_DEBUG_DYNAMICLIBRARY_H
 #define EXTERNAL_DEBUG_DYNAMICLIBRARY_H
 
+#include "../shared/hash.h"
 #include <dlfcn.h>
 #include <functional>
 #include <string>

@@ -1,4 +1,5 @@
 #include "../shared/Controller.h"
+#include "../shared/hash.h"
 #include "DynamicLibrary.h"
 #include <iostream>
 #include <chrono>

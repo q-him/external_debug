@@ -18,18 +18,14 @@ set(DEBUGGER_SRCS
         debugger/PseudoTerminal.cpp
         debugger/PseudoTerminal.h debugger/EndOfFileError.cpp debugger/EndOfFileError.h debugger/InputHistory.cpp debugger/InputHistory.h)
 
-set(SHARED_HASH "")
-foreach (F ${SHARED_SRCS})
-    file(MD5 ../${F} F_HASH)
-    string(APPEND SHARED_HASH ${F_HASH})
-    message("MD5(${F}) = ${F_HASH}")
-endforeach ()
-string(MD5 SHARED_HASH "${SHARED_HASH}")
-message("SHARED_HASH = ${SHARED_HASH}")
-add_compile_definitions(SHARED_HASH="${SHARED_HASH}")
-
+add_custom_target(shared_hash ALL
+        COMMAND ${CMAKE_SOURCE_DIR}/hash_shared.sh
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_executable(main ${SHARED_SRCS} ${MAIN_SRCS})
 add_library(debugger SHARED ${SHARED_SRCS} ${DEBUGGER_SRCS})
+
+add_dependencies(main shared_hash)
+add_dependencies(debugger shared_hash)
 
 set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
 
