@@ -57,7 +57,7 @@ std::string PseudoTerminal::receive_line() {
             ControlCode c = std::get<ControlCode>(code);
             if (!PseudoTerminal::handle_control_code(c, line)) {
                 break;
-            };
+            }
         }
     } while (true);
     write(master_handle, "\r\n", 2);

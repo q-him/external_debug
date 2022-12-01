@@ -55,5 +55,4 @@ private:
     void send_erase_sequence(std::size_t count) const;
 };
 
-
 #endif //EXTERNAL_DEBUG_PSEUDOTERMINAL_H

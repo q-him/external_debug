@@ -36,7 +36,7 @@ void debugger_loop(PseudoTerminal& pt, Interpreter& interpreter) {
     }
 }
 
-void debug_thread_body() {
+[[noreturn]] void debug_thread_body() {
     PseudoTerminal pt;
     std::cout << "Debugger device: " << pt.get_slave_name() << std::endl;
 
@@ -67,6 +67,6 @@ extern "C" void start(std::shared_ptr<Controller> controller) {
     debug_thread = std::thread(debug_thread_body);
 }
 
-std::string get_shared_hash() {
+[[maybe_unused]] std::string get_shared_hash() {
     return SHARED_HASH;
 }
